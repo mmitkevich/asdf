@@ -115,7 +115,7 @@ struct Asdf
 		true_  = 0x01,
 		false_ = 0x02,
 		number = 0x03,
-		string = 0x05,
+		string_ = 0x05,
 		array  = 0x09,
 		object = 0x0A,
 	}
@@ -143,7 +143,7 @@ struct Asdf
 	this(in char[] str) pure @safe
 	{
 		data = new ubyte[str.length + 5];
-		data[0] = Kind.string;
+		data[0] = Kind.string_;
 		length4 = str.length;
 		data[5 .. $] = cast(const(ubyte)[])str;
 	}
@@ -219,7 +219,7 @@ struct Asdf
 				enforceValidAsdf(data.length == length + 2, t);
 				sink.putSmallEscaped(cast(const(char)[]) data[2 .. $]);
 				break;
-			case Kind.string:
+			case Kind.string_:
 				enforceValidAsdf(data.length >= 5, Kind.object);
 				enforceValidAsdf(data.length == length4 + 5, t);
 				sink.put('"');
@@ -333,7 +333,7 @@ struct Asdf
 	+/
 	bool opEquals(in char[] str) const pure @trusted nothrow
 	{
-		return data.length >= 5 && data[0] == Kind.string && data[5 .. 5 + length4] == cast(const(ubyte)[]) str;
+		return data.length >= 5 && data[0] == Kind.string_ && data[5 .. 5 + length4] == cast(const(ubyte)[]) str;
 	}
 
 	///
@@ -381,7 +381,7 @@ struct Asdf
 							_front = Asdf(_data[0 .. len]);
 							_data = _data[len .. $];
 							return;
-						case Kind.string:
+						case Kind.string_:
 						case Kind.array:
 						case Kind.object:
 							enforceValidAsdf(_data.length >= 5, t);
@@ -399,7 +399,7 @@ struct Asdf
 							enforceValidAsdf(_data.length >= 2, t);
 							_data.popFrontExactly(_data[1] + 2);
 							continue;
-						case 0x80 | Kind.string:
+						case 0x80 | Kind.string_:
 						case 0x80 | Kind.array:
 						case 0x80 | Kind.object:
 							enforceValidAsdf(_data.length >= 5, t);
@@ -477,7 +477,7 @@ struct Asdf
 							_front.value = Asdf(_data[0 .. len]);
 							_data = _data[len .. $];
 							return;
-						case Kind.string:
+						case Kind.string_:
 						case Kind.array:
 						case Kind.object:
 							enforceValidAsdf(_data.length >= 5, t);
@@ -495,7 +495,7 @@ struct Asdf
 							enforceValidAsdf(_data.length >= 2, t);
 							_data.popFrontExactly(_data[1] + 2);
 							continue;
-						case 0x80 | Kind.string:
+						case 0x80 | Kind.string_:
 						case 0x80 | Kind.array:
 						case 0x80 | Kind.object:
 							enforceValidAsdf(_data.length >= 5, t);
@@ -631,7 +631,7 @@ struct Asdf
 	/++
 	`cast` operator overloading.
 	+/
-	T opCast(T)()
+	T opCast(T)() 
 	{
 		import std.datetime: SysTime, DateTime, usecs, UTC;
 		import std.traits: isNumeric;
@@ -679,7 +679,7 @@ struct Asdf
 					return assumePure(() => str.to!T)();
 				else goto default;
 			}
-			case string:
+			case string_:
 			{
 				auto str = cast(const(char)[]) data[5 .. $];
 				static if(is(T == bool))

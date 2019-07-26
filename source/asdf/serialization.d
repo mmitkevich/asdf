@@ -1382,7 +1382,7 @@ pure:
 	///ditto
 	void putValue(in char[] str)
 	{
-		app.put1(Asdf.Kind.string);
+		app.put1(Asdf.Kind.string_);
 		auto sh = app.skip(4);
 		app.put(str);
 		app.put4(cast(uint)(app.shift - sh - 4), sh);
@@ -2064,7 +2064,7 @@ void deserializeScopedString(V : const(char)[])(Asdf data, ref V value)
 	auto kind = data.kind;
 	with(Asdf.Kind) switch(kind)
 	{
-		case string:
+		case string_:
 			value = cast(V) data.data[5 .. $];
 			return;
 		case null_:

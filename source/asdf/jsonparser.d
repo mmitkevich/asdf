@@ -775,7 +775,7 @@ struct JsonParser(bool includingNewLine, bool hasSpaces, bool assumeValid, Alloc
             stringValue:
             case '"':
                 currIsKey = false;
-                *dataPtr++ = Asdf.Kind.string;
+                *dataPtr++ = Asdf.Kind.string_;
                 stringAndNumberShift = dataPtr;
                 // reserve 4 byte for the length
                 dataPtr += 4;
