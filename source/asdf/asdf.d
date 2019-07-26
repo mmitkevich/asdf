@@ -675,6 +675,9 @@ struct Asdf
 					return assumePure(() => st.to!T)();
 				}
 				else
+				static if(is(T == immutable(char)[] )) {
+					return str;
+				}else
 				static if(__traits(compiles, assumePure(() => str.to!T)()))
 					return assumePure(() => str.to!T)();
 				else goto default;
@@ -684,8 +687,9 @@ struct Asdf
 				auto str = cast(const(char)[]) data[5 .. $];
 				static if(is(T == bool))
 					return str != "0" && str != "false" && str != "";
-				else
-				static if(__traits(compiles, str.to!T))
+				else static if(is(T == string))
+					return cast(string)str;
+				else static if(__traits(compiles, str.to!T))
 					return str.to!T;
 				else goto default;
 			}
