@@ -121,10 +121,11 @@ struct Asdf
 	}
 
 	/// Returns ASDF Kind
-	ubyte kind() const pure @safe
+	ubyte kind() const pure @safe @nogc nothrow
 	{
-		if (!data.length)
-			throw new EmptyAsdfException;
+		// FIXME
+		// if (!data.length)
+		//	throw new EmptyAsdfException;
 		return data[0];
 	}
 
